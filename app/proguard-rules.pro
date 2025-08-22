@@ -1,0 +1,5 @@
+-dontwarn org.jetbrains.annotations.**
+-keep class kotlinx.coroutines.** { *; }
+-dontwarn com.google.mlkit.**
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.firebase.** { *; }
