@@ -1,12 +1,21 @@
+import java.util.Properties
+
 plugins {
 	id("com.android.application")
 	id("org.jetbrains.kotlin.android")
+	id("org.jetbrains.kotlin.plugin.compose")
 	id("com.google.gms.google-services")
 }
 
 android {
 	namespace = "com.finpulse.app"
 	compileSdk = 35
+
+	val props = Properties().apply {
+		val f = rootProject.file("local.properties")
+		if (f.exists()) f.inputStream().use { load(it) }
+	}
+	fun propOrEmpty(key: String) = props.getProperty(key, "")
 
 	defaultConfig {
 		applicationId = "com.finpulse.app"
@@ -16,6 +25,12 @@ android {
 		versionName = "1.0.0"
 
 		vectorDrawables.useSupportLibrary = true
+
+		buildConfigField("String", "FIREBASE_API_KEY", "\"${propOrEmpty("FIREBASE_API_KEY")}\"")
+		buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${propOrEmpty("FIREBASE_PROJECT_ID")}\"")
+		buildConfigField("String", "FIREBASE_APP_ID", "\"${propOrEmpty("FIREBASE_APP_ID")}\"")
+		buildConfigField("String", "FIREBASE_SENDER_ID", "\"${propOrEmpty("FIREBASE_SENDER_ID")}\"")
+		buildConfigField("String", "FIREBASE_STORAGE_BUCKET", "\"${propOrEmpty("FIREBASE_STORAGE_BUCKET")}\"")
 	}
 
 	buildTypes {
@@ -33,10 +48,16 @@ android {
 
 	buildFeatures {
 		compose = true
+		buildConfig = true
 	}
 
-	composeOptions {
-		kotlinCompilerExtensionVersion = "1.5.15"
+	compileOptions {
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
+	}
+
+	kotlinOptions {
+		jvmTarget = "17"
 	}
 
 	packaging {
